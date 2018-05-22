@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 
 # motifator
 
-The goal of motifator is to ...
+The goal of motifator is to allow users to generate spatial motifs that replicate the ones seen in real-world data, without including any potentially identifying information.
 
 ## Installation
 
@@ -27,8 +27,23 @@ devtools::install_github("jzelner/motifator")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+Consider this example: You want to compare the impact of spatial clustering of different levels of vaccination coverage in a model of infectious disease transmission. So, let's make a map where we assume that about 50% of the population is vaccinated, but there is no spatial clustering.
+
+Our metric of spatial clustering for this example is Moran's I. Theoretical values of I run from -1 to 1. I = -1 implies *anticorrelation*, in which neighboring cells have values that are maximally different from each other. By contrast, values closer to +1 indicate strong spatial *autocorrelation*. 
+
+Let's sample a map with strong spatial correlation:
 
 ```{r example}
-## basic example code
+require(motifator)
+m <- sampleProportion(10, i_target = 0.9, mean_target = 0.5)
+plotMap(m)
 ```
+
+Now for comparison, let's do the same thing but for a `10 x 10` map with no spatial structure and the same mean:
+
+```{r example2}
+require(motifator)
+m <- sampleProportion(10, i_target = 0.0, mean_target = 0.5)
+plotMap(m)
+```
+
