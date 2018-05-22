@@ -33,8 +33,8 @@ m <- sampleProportion(10, i_target = 0.9, mean_target = 0.5)
 #> 
 #> SAMPLING FOR MODEL 'gpcor' NOW (CHAIN 1).
 #> 
-#> Gradient evaluation took 0.001484 seconds
-#> 1000 transitions using 10 leapfrog steps per transition would take 14.84 seconds.
+#> Gradient evaluation took 0.001615 seconds
+#> 1000 transitions using 10 leapfrog steps per transition would take 16.15 seconds.
 #> Adjust your expectations accordingly!
 #> 
 #> 
@@ -51,9 +51,11 @@ m <- sampleProportion(10, i_target = 0.9, mean_target = 0.5)
 #> Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Iteration: 1000 / 1000 [100%]  (Sampling)
 #> 
-#>  Elapsed Time: 28.4442 seconds (Warm-up)
-#>                31.2279 seconds (Sampling)
-#>                59.6722 seconds (Total)
+#>  Elapsed Time: 25.3592 seconds (Warm-up)
+#>                22.5426 seconds (Sampling)
+#>                47.9018 seconds (Total)
+#> Warning: There were 1 divergent transitions after warmup. Increasing adapt_delta above 0.8 may help. See
+#> http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
 #> Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See
 #> http://mc-stan.org/misc/warnings.html#bfmi-low
 #> Warning: Examine the pairs() plot to diagnose sampling problems
@@ -62,17 +64,18 @@ plotMap(m)
 
 ![](README-example-1.png)
 
+This results in an average *I* value of 0.79 and an average proportion of 0.51.
+
 Now for comparison, let's do the same thing but for a `10 x 10` map with no spatial structure and the same mean:
 
 ``` r
-require(motifator)
 m <- sampleProportion(10, i_target = 0.0, mean_target = 0.5)
 #> Joining, by = c("x", "y")
 #> 
 #> SAMPLING FOR MODEL 'gpcor' NOW (CHAIN 1).
 #> 
-#> Gradient evaluation took 0.001552 seconds
-#> 1000 transitions using 10 leapfrog steps per transition would take 15.52 seconds.
+#> Gradient evaluation took 0.001442 seconds
+#> 1000 transitions using 10 leapfrog steps per transition would take 14.42 seconds.
 #> Adjust your expectations accordingly!
 #> 
 #> 
@@ -89,9 +92,9 @@ m <- sampleProportion(10, i_target = 0.0, mean_target = 0.5)
 #> Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Iteration: 1000 / 1000 [100%]  (Sampling)
 #> 
-#>  Elapsed Time: 12.2905 seconds (Warm-up)
-#>                13.4921 seconds (Sampling)
-#>                25.7826 seconds (Total)
+#>  Elapsed Time: 13.0166 seconds (Warm-up)
+#>                9.53646 seconds (Sampling)
+#>                22.5531 seconds (Total)
 #> Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See
 #> http://mc-stan.org/misc/warnings.html#bfmi-low
 #> Warning: Examine the pairs() plot to diagnose sampling problems
@@ -99,3 +102,44 @@ plotMap(m)
 ```
 
 ![](README-example2-1.png)
+
+This results in an average *I* value of 0.04 and an average proportion of 0.50.
+
+And with anti-correlation:
+
+``` r
+m <- sampleProportion(10, i_target = -0.9, mean_target = 0.5)
+#> Joining, by = c("x", "y")
+#> 
+#> SAMPLING FOR MODEL 'gpcor' NOW (CHAIN 1).
+#> 
+#> Gradient evaluation took 0.001501 seconds
+#> 1000 transitions using 10 leapfrog steps per transition would take 15.01 seconds.
+#> Adjust your expectations accordingly!
+#> 
+#> 
+#> Iteration:   1 / 1000 [  0%]  (Warmup)
+#> Iteration: 100 / 1000 [ 10%]  (Warmup)
+#> Iteration: 200 / 1000 [ 20%]  (Warmup)
+#> Iteration: 300 / 1000 [ 30%]  (Warmup)
+#> Iteration: 400 / 1000 [ 40%]  (Warmup)
+#> Iteration: 500 / 1000 [ 50%]  (Warmup)
+#> Iteration: 501 / 1000 [ 50%]  (Sampling)
+#> Iteration: 600 / 1000 [ 60%]  (Sampling)
+#> Iteration: 700 / 1000 [ 70%]  (Sampling)
+#> Iteration: 800 / 1000 [ 80%]  (Sampling)
+#> Iteration: 900 / 1000 [ 90%]  (Sampling)
+#> Iteration: 1000 / 1000 [100%]  (Sampling)
+#> 
+#>  Elapsed Time: 12.2454 seconds (Warm-up)
+#>                9.7475 seconds (Sampling)
+#>                21.9929 seconds (Total)
+#> Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See
+#> http://mc-stan.org/misc/warnings.html#bfmi-low
+#> Warning: Examine the pairs() plot to diagnose sampling problems
+plotMap(m)
+```
+
+![](README-example3-1.png)
+
+This results in an average *I* value of -0.14 and an average proportion of 0.50. This value is a bit short of our target value of I, but we can see that the variance of the cell values has increased significantly. Acheiving the theoretical maximum value of -1 may be particularly infeasible for continuous outputs constrained to (0,1) because it necessitates a perfectly inverse relationship in the value of neighboring cells. Future iterations should pre-derive the minimum and maximum values of *I* given the output range and allow users to set the correlation parameter as a function of this range.

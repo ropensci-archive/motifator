@@ -39,11 +39,25 @@ m <- sampleProportion(10, i_target = 0.9, mean_target = 0.5)
 plotMap(m)
 ```
 
+This results in an average *I* value of `r sprintf("%0.2f", mean(m$i))` and an average proportion of `r sprintf("%0.2f", mean(m$y_bar))`.
+
 Now for comparison, let's do the same thing but for a `10 x 10` map with no spatial structure and the same mean:
 
 ```{r example2}
-require(motifator)
 m <- sampleProportion(10, i_target = 0.0, mean_target = 0.5)
 plotMap(m)
 ```
+
+This results in an average *I* value of `r sprintf("%0.2f", mean(m$i))` and an average proportion of `r sprintf("%0.2f", mean(m$y_bar))`.
+
+
+And with anti-correlation:
+
+```{r example3}
+m <- sampleProportion(10, i_target = -0.9, mean_target = 0.5)
+plotMap(m)
+```
+
+This results in an average *I* value of `r sprintf("%0.2f", mean(m$i))` and an average proportion of `r sprintf("%0.2f", mean(m$y_bar))`. This value is a bit short of our target value of I, but we can see that the variance of the cell values has increased significantly. Acheiving the theoretical maximum value of -1 may be particularly infeasible for continuous outputs constrained to (0,1) because it necessitates a perfectly inverse relationship in the value of neighboring cells. Future iterations should pre-derive the minimum and maximum values of *I* given the output range and allow users to set the correlation parameter as a function of this range. 
+
 
